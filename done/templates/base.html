@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+
+{% macro input(field) %}
+    <div class="control-group">
+        {% if field.type == 'BooleanField' %}
+            <div class="controls">
+                <label for="{{ field.name }}" class="checkbox">
+                    {{ field(**kwargs) }}
+                    {{ field.label.text }}
+                </label>
+            </div>
+        {% else %}
+            <label for="{{ field.name }}" class="control-label">{{ field.label.text }}</label>
+            <div class="controls">
+                {{ field(**kwargs) }}
+                {% if field.errors %}
+                    <div>
+                        {% for error in field.errors %}
+                            <span class="help-inline">
+                                {{ error }}
+                            </span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        {% endif %}
+    </div>
+{% endmacro %}
+
+<html>
+    <head>
+        <title>{% block title %}{% endblock title %}</title>
+        <link rel="stylesheet" type="text/css" href="{{ 'css/bootstrap.min.css'|static }}">
+        <link rel="stylesheet" type="text/css" href="{{ 'css/bootstrap-responsive.min.css'|static }}">
+        <link rel="stylesheet" type="text/css" href="{{ 'css/jquery-ui.css'|static }}">
+        <link rel="stylesheet" type="text/css" href="{{ 'css/custom.css'|static }}">
+
+        <script type="text/javascript" src="{{ 'js/jquery.min.js'|static }}"></script>
+        <script type="text/javascript" src="{{ 'js/jquery-ui.min.js'|static }}"></script>
+        <script type="text/javascript" src="{{ 'js/bootstrap.min.js'|static }}"></script>
+        <script type="text/javascript" src="{{ 'js/underscore.js'|static }}"></script>
+        <script type="text/javascript" src="{{ 'js/backbone.js'|static }}"></script>
+        <script type="text/javascript" src="{{ 'js/moment.min.js'|static }}"></script>
+
+        {% block head %}
+        {% endblock head %}
+    </head>
+
+    <body>
+        <div class="navbar navbar-fixed-top navbar-inverse">
+            <div class="navbar-inner">
+                <div class="container">
+                    <div class="row">
+                        <div class="span10 offset1">
+                            <a href="#" class="brand">done</a>
+                            <ul class="nav pull-right">
+                                <li><a href="https://julo.ch">a <b>julo.ch</b> service</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            {% block container %}
+            {% endblock container %} 
+        </div>
+    {% block end %}
+    {% endblock end %}
+    </body>
+</html>

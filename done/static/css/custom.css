@@ -1,0 +1,26 @@
+body {
+    padding-top: 60px;
+}
+
+.navbar-inner {
+    border-radius: 0px;
+}
+
+#menu {
+    border-right: 1px solid #e5e5e5;
+}
+
+#menu a {
+    color: black;
+}
+
+#info {
+    border-left: 1px solid #e5e5e5;
+    padding-left: 20px;
+    height: 100%;
+}
+
+.editable-input {
+    height: 14px;
+    padding-top: 3px;
+}

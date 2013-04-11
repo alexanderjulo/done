@@ -1,0 +1,10 @@
+# python stuff
+*.pyc
+.venv
+
+# config & data
+database
+config.py
+
+# sublime stuff
+*.sublime-*
