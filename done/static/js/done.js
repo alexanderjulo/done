@@ -54,7 +54,7 @@ var TaskView = Backbone.View.extend({
 
     activate: function(event) {
         event.preventDefault();
-        this.$el.siblings().removeClass('active');
+        $('#tasks li').removeClass('active');
         this.$el.addClass('active');
         app.infoview.show(this.model);
     },
