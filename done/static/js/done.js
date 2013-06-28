@@ -193,7 +193,7 @@ var InfoView = Backbone.View.extend({
     model: null,
 
     events: {
-        'click #info-done': 'completed',
+        'click #info-completed': 'completed',
         'click #info-postpone': 'postpone',
         'click #info-delete': 'delete',
         'change #info-due': 'due',
