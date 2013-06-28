@@ -1,50 +1,46 @@
 import os
-from datetime import date, timedelta
-from flask import redirect, url_for, render_template, request
-from done.models import *
+import json
 from done.tools import BaseView
-
-
-class PublicView(BaseView):
-
-    route_base = '/'
-    template = 'public'
-
-    def _render_template(self, template, *args, **kwargs):
-        return render_template(
-            os.path.join(self.template, template + '.html'),
-            *args,
-            **kwargs
-        )
-
-    def index(self):
-        return self._render_template('home')
-
-    def features(self):
-        return self._render_template('features')
-
-    def pricing(self):
-        return self._render_template('pricing')
-
-    def roadmap(self):
-        return self._render_template('roadmap')
-
-    def signup(self):
-        return self._render_template('signup')
+from done.models import Task, Project, Area
 
 
 class AppView(BaseView):
     """The main app view, that will handle all task management."""
 
-    template = 'tasks'
+    template = 'ui'
 
     def index(self):
-        """Render the app."""
-        return self._render_template()
+        """Render the app.
+
+        We include a bootstrapped version of all data, because backbone
+        says everything else is bad. :("""
+
+        tasks = Task.query.all()
+        tasks_repr = []
+        for task in tasks:
+            tasks_repr.append(task.repr)
+        tasks_json = json.dumps(tasks_repr)
+
+        projects = Project.query.all()
+        projects_repr = []
+        for project in projects:
+            projects_repr.append(project.repr)
+        projects_json = json.dumps(projects_repr)
+
+        areas = Area.query.all()
+        areas_repr = []
+        for area in areas:
+            areas_repr.append(area.repr)
+        areas_json = json.dumps(areas_repr)
+
+        return self._render_template(
+            tasks=tasks_json,
+            projects=projects_json,
+            areas=areas_json
+        )
 
 
 def setUp(app):
     """A helper to handle the lazy setup.
     It connects the coded functionality to the active app instance."""
-    PublicView.register(app)
     AppView.register(app)

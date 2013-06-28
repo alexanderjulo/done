@@ -1,0 +1,16 @@
+<a href="#">
+    <%= name %>
+    <% if (due) { %>
+        <span class="due label label-<%
+            mdue = moment(this.model.get('due'), 'YYYY-MM-DD');
+            mtod = moment(new Date());
+            if (mtod.isBefore(mdue, 'day')) {
+                print('info')
+            } else if (mtod.isSame(mdue, 'day')) {
+                print('warning')
+            } else if (mtod.isAfter(mdue, 'day')) {
+                print('important')
+            }%>
+        "><%= due %></span>
+    <% } %>
+</a>

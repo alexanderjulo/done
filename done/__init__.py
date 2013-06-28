@@ -15,11 +15,14 @@ def create_app(configobject=None, configfile=None):
     import tools
     tools.setUp(app)
 
+    import api
+    api.setUp(app)
+
     import ui
     ui.setUp(app)
 
-    import api
-    api.setUp(app)
+    import public
+    public.setUp(app)
 
     return app
 

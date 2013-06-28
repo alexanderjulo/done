@@ -1,27 +1,56 @@
 {% extends "base.html" %}
 
+{% macro uicomponent(name) -%}
+    <script type="text/template" id="{{ name }}-template">
+        {%- include "ui-components/" + name + ".html" -%}
+    </script>
+{%- endmacro %}
+
+{% block templates %}
+<!-- templates -->
+{{ uicomponent('task') }}
+{{ uicomponent('tasks') }}
+{{ uicomponent('info') }}
+{{ uicomponent('info-default') }}
+{{ uicomponent('menu-entry') }}
+{{ uicomponent('menu') }}
+{% endblock templates %}
+
+{% block head %}
+<!-- app specific dependencies -->
+<script type="text/javascript" src="{{ 'js/jquery-ui.js'|static }}"></script>
+<script type="text/javascript" src="{{ 'js/underscore.js'|static }}"></script>
+<script type="text/javascript" src="{{ 'js/backbone.js'|static }}"></script>
+<script type="text/javascript" src="{{ 'js/moment.js'|static }}"></script>
+
+<!-- the app -->
+<script type="text/javascript" src="{{ 'js/done.js'|static }}"></script>
+{% endblock head %}
+
 {% block container %}
-{% if self.title() %}
-    <div class="row">
-        <div class="span7 offset4">
-            <div class="page-header">
-                <h1>{{ self.title() }}</h1>
-            </div>
-        </div>
-    </div>
-{% endif %}
 <div class="row">
-    <div class="span2 offset1">
-        {% block menu %}
-        {% endblock menu %}
+    <div class="span2" id="left">
+        <ul class="nav nav-list nav-custom" id="menu">
+        </ul>
     </div>
-    <div class="span6">
-        {% block main %}
-        {% endblock main %}
+    <div class="span6" id="center">
+        <div id="tasks"></div>
     </div>
-    <div class="span3">
-        {% block extra %}
-        {% endblock extra %}
+    <div class="span4" id="right">
+        <div id="info"></div>
     </div>
 </div>
 {% endblock container %}
+
+{% block end %}
+<!-- init and open default view -->
+<script type="text/javascript">
+
+    var app = new App({
+        tasks: {{ tasks|safe }},
+        projects: {{ projects|safe }},
+        areas: {{ areas|safe }}
+    });
+    console.log(Backbone.history.start({root: '/app/'}));
+</script>
+{% endblock end %}

@@ -172,6 +172,22 @@ class ProjectView(APIBaseView):
         print projects[0].repr
         return self._json_elementlist(projects)
 
+    def post(self):
+        """Create a new project."""
+        if request.json:
+            data = request.json
+        elif request.form:
+            data = request.form
+        else:
+            abort(400)
+        project = Project()
+        if not data.get('name'):
+            return self._json_error('No name specified.')
+        project.name = data.get('name')
+        db.session.add(project)
+        db.session.commit()
+        return self._json_response(project.repr)
+
 
 class AreaView(APIBaseView):
 
@@ -180,6 +196,22 @@ class AreaView(APIBaseView):
     def index(self):
         areas = Area.query.all()
         return self._json_elementlist(areas)
+
+    def post(self):
+        """Create a new area."""
+        if request.json:
+            data = request.json
+        elif request.form:
+            data = request.form
+        else:
+            abort(400)
+        area = Area()
+        if not data.get('name'):
+            return self._json_error('No name specified.')
+        area.name = data.get('name')
+        db.session.add(area)
+        db.session.commit()
+        return self._json_response(area.repr)
 
 
 def setUp(app):

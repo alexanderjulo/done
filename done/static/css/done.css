@@ -1,0 +1,272 @@
+/* all resolutions id specifics */
+#navbar .navbar-inner {
+    border-radius: 0px;
+    background-image: none;
+}
+
+#navbar .btn-navbar {
+    float: left;
+}
+
+#menu {
+    margin-top: 20px;
+}
+
+#menu .nav-header span.add {
+    float: right;
+}
+
+#tasks form {
+    margin-top: 20px;
+}
+
+#tasks #task-input,
+#tasks #task-submit {
+    display: inline-block;
+}
+
+#tasks-completed {
+    margin-top: 20px;
+}
+
+#info {
+    padding-top: 70px;
+}
+
+#info .page-header {
+    margin-bottom: 20px;
+}
+
+#info .page-header h4 {
+    margin-bottom: 0px;
+}
+
+#info .table {
+    margin-top: 10px;
+}
+
+#info .table th,
+#info .table td {
+    height: 30px;
+    line-height: 30px;
+    vertical-align:middle
+}
+
+#info .table td input,
+#info .table td select {
+    margin-bottom: 0px;
+}
+
+#menu li.dropping a {
+    background-color: #eeeeee;
+}
+
+/* fixed segmented nav lists */
+
+.nav-list li > a {
+    padding: 3px 15px;
+}
+
+.nav li > a:hover,
+.nav li > a:focus {
+    text-decoration: none;
+    background-color: #eeeeee;
+}
+
+.nav-list li > a,
+.nav-list .nav-header {
+    margin-right: -15px;
+    margin-left: -15px;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+
+.nav li > a {
+    display: block;
+}
+
+.nav-list .active > a,
+.nav-list .active > a:hover,
+.nav-list .active > a:focus {
+    color: #ffffff;
+    text-shadow: 0 -1px 0 rgba(0, 0, 0, 0.2);
+    background-color: #0088cc;
+}
+
+/* media queries */
+
+@media (max-width: 767px) {
+
+    /* we shift the padding from body to our container to make the
+    navbar look nice! */
+    body, html, #container {
+        padding-left: 0px;
+        padding-right: 0px;
+        overflow: hidden;
+        width: 100%;
+    }
+
+    #left {
+        position: absolute;
+        left: -30%;
+        top: 60px;
+        width: 30%;
+    }
+
+    #center {
+        position: absolute;
+        top: 60px;
+        left: 0px;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    #right {
+        position: absolute;
+        left: 100%;
+        top: 60px;
+        width: 60%;
+    }
+
+    #tasks #tasks-list li,
+    #tasks #tasks-list-completed li  {
+        margin-left: -20px;
+        padding-left: -20px;
+    }
+
+    #tasks-list li a,
+    #tasks #tasks-list-completed li a {
+        display: block;
+        width: 100%;
+        padding-left: 35px;
+    }
+
+    #task-input {
+        width: 75%;
+    }
+
+    #tasks #task-submit {
+        float: right;
+    }
+
+
+}
+
+@media (max-width: 979px) {
+
+    /* we disable top padding for our navbar */
+    body {
+        padding-top: 0;
+    }
+
+}
+
+@media (min-width: 768px) and (max-width: 1199px) {
+    #menu {
+        border-right: 1px solid #dddddd;
+    }
+
+    #tasks,
+    #info {
+        padding-left: 20px;
+        margin-left: -20px;
+    }
+
+    #tasks {
+        padding-right: 20px;
+    }
+
+    #tasks #tasks-list li,
+    #tasks #tasks-list-completed li {
+        padding-right: -20px;
+        margin-right: -20px;
+    }
+
+    #task-input {
+        width: 70%;
+    }
+
+    #tasks #task-submit {
+        float: right;
+    }
+
+    #info {
+        border-left: 1px solid #dddddd;
+    }
+
+}
+
+@media (min-width: 1200px) {
+
+    #menu {
+        border-right: 1px solid #dddddd;
+    }
+
+    #tasks,
+    #info {
+        padding-left: 30px;
+        margin-left: -30px;
+    }
+
+    #tasks {
+        padding-right: 30px;
+    }
+
+    #tasks #tasks-list li,
+    #tasks #tasks-list-completed li  {
+        padding-right: -30px;
+        margin-right: -30px;
+    }
+
+    #task-input {
+        width: 80%;
+    }
+
+    #tasks #task-submit {
+        float: right;
+    }
+
+    #info {
+        border-left: 1px solid #dddddd;
+    }
+}
+
+/* common classes */
+
+.hidden {
+    display: none;
+}
+
+.page-header {
+    border-bottom-color: #dddddd;
+}
+
+.table th,
+.table td {
+    border-top-color: #eeeeee;
+}
+
+ul.nav-list.nav-custom li a {
+    color: black;
+}
+
+ul.nav-list.nav-custom li.nav-header a {
+    font-size: 12px;
+    color: #999999;
+}
+
+ul.nav-list.nav-custom li.nav-header a:hover {
+    background-color: transparent;
+}
+
+ul.nav-list.nav-custom li.active a {
+    color: inherit;
+    background-color: #dddddd;
+}
+
+ul.nav-list.nav-custom li.empty {
+    height: 20px;
+}
+
+ul.nav-list.nav-custom li .due {
+    float: right;
+}
