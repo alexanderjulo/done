@@ -1,0 +1,18 @@
+{% extends "public/base.html" %}
+
+{% block container %}
+<div class="public">
+    <div class="row">
+        <div class="span6 offset3">
+            <div class="page-header">
+                <h2 style="text-align: center;">Login</h2>
+            </div>
+            <form class="form form-inline" method="POST">
+                <input type="text" name="user" placeholder="Username">
+                <input type="password" name="password" placeholder="Password">
+                <input type="submit" class="btn btn-primary" value="Login!" style="float: right;">
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock container %}

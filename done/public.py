@@ -1,5 +1,6 @@
 import os
 from flask import render_template, redirect, url_for
+from flask.ext.classy import route
 from done.tools import BaseView
 
 
@@ -17,22 +18,20 @@ class PublicView(BaseView):
         )
 
     def index(self):
-        return self._render_template('home')
+        return self._render_template('about')
 
-    def home(self):
+    def about(self):
         return redirect(url_for('PublicView:index'), 301)
 
-    def features(self):
-        return self._render_template('features')
-
-    def pricing(self):
-        return self._render_template('pricing')
-
-    def roadmap(self):
-        return self._render_template('roadmap')
+    def docs(self):
+        return self._render_template('docs')
 
     def signup(self):
-        return self._render_template('signup')
+        return redirect(url_for('AppView:signup'), 301)
+
+    @route('/login/', methods=['GET', 'POST'])
+    def login(self):
+        return redirect(url_for('AppView:login'), 301)
 
 
 def setUp(app):

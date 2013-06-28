@@ -13,6 +13,13 @@ class User(db.Model):
     __tablename__ = 'users'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.Text)
+    password = db.Column(db.Text)
+
+    @classmethod
+    def auth(self, name, password):
+        print name, password
+        user = self.query.filter_by(name=name).first()
+        return user is not None and user.password == password
 
 
 class Area(db.Model):

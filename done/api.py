@@ -1,13 +1,16 @@
 import json
 from datetime import date
-from flask import Response, request
+from flask import Response, request, g
 from flask.ext.classy import route
 from done import db
-from done.models import *
 from done.tools import *
+from done.models import *
+from done.auth import auth_required
 
 
 class APIBaseView(BaseView):
+
+    decorators = [auth_required]
 
     def _json_response(self, data, status=200):
         """Returns a response object with the json representation of the
@@ -143,6 +146,7 @@ class TaskView(APIBaseView):
             task.due = due
         task.area_id = data.get('area_id')
         task.project_id = data.get('project_id')
+        task.owner_id = g.current_user.id
         db.session.add(task)
         db.session.commit()
         return self._json_response(task.repr)
@@ -184,6 +188,7 @@ class ProjectView(APIBaseView):
         if not data.get('name'):
             return self._json_error('No name specified.')
         project.name = data.get('name')
+        project.owner_id = g.current_user.id
         db.session.add(project)
         db.session.commit()
         return self._json_response(project.repr)
@@ -209,6 +214,7 @@ class AreaView(APIBaseView):
         if not data.get('name'):
             return self._json_error('No name specified.')
         area.name = data.get('name')
+        area.owner_id = g.current_user.id
         db.session.add(area)
         db.session.commit()
         return self._json_response(area.repr)
