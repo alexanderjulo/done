@@ -39,6 +39,7 @@ var TaskView = Backbone.View.extend({
     template: _.template($('#task-template').html()),
 
     initialize: function(options) {
+        this.tasksview = options.tasksview;
         this.listenTo(this.model, 'change', this.render);
         this.listenTo(this.model, 'remove', this.remove);
         this.listenTo(this.model, 'destroy', this.remove);
@@ -49,12 +50,18 @@ var TaskView = Backbone.View.extend({
 
     render: function() {
         this.$el.html(this.template(this.model.toJSON()));
+        if (this.tasksview.activeid == this.model.get('id')) {
+            this.$el.addClass('active');
+        }
         return this;
     },
 
     activate: function(event) {
-        event.preventDefault();
-        $('#tasks li').removeClass('active');
+        this.tasksview.activeid = this.model.get('id');
+        if (event) {
+            event.preventDefault();
+        }
+        this.tasksview.$('li').removeClass('active');
         this.$el.addClass('active');
         app.infoview.show(this.model);
     },
@@ -74,13 +81,15 @@ var TasksView = Backbone.View.extend({
     el: '#tasks',
 
     events: {
-        'click #tasks-show-completed': 'showCompleted',
-        'click #tasks-hide-completed': 'hideCompleted',
+        'click #tasks-show-completed': 'toggleCompleted',
+        'click #tasks-hide-completed': 'toggleCompleted',
         'click #task-submit': 'submitOnClick',
         'keypress #task-input': 'submitOnEnter'
     },
 
     filterdata: null,
+
+    showCompleted: false,
 
     template: _.template($('#tasks-template').html()),
 
@@ -91,7 +100,7 @@ var TasksView = Backbone.View.extend({
     },
 
     render: function() {
-        this.$el.html(this.template());
+        this.$el.html(this.template({showCompleted: this.showCompleted}));
         if (this.filterData) {
             tasks = this.collection.where(this.filterData);
         } else {
@@ -109,24 +118,20 @@ var TasksView = Backbone.View.extend({
     },
 
     add: function(task) {
-        view = new TaskView({model: task});
+        view = new TaskView({model: task, tasksview: this});
         view.render();
         if (task.get('completed')) {
-            this.$('#tasks-list-completed').append(view.el);
+            this.$('#tasks-list-completed').prepend(view.el);
         } else {
-            this.$('#tasks-list').append(view.el);
+            this.$('#tasks-list').prepend(view.el);
         }
         
     },
 
-    showCompleted: function() {
-        this.$('#tasks-show-completed').addClass('hidden');
-        this.$('#tasks-completed').removeClass('hidden');
-    },
-
-    hideCompleted: function() {
-        this.$('#tasks-completed').addClass('hidden');
-        this.$('#tasks-show-completed').removeClass('hidden');
+    toggleCompleted: function() {
+        this.showCompleted = !this.showCompleted
+        this.$('#tasks-show-completed').toggleClass('hidden');
+        this.$('#tasks-completed').toggleClass('hidden');
     },
 
     submit: function() {
@@ -501,6 +506,12 @@ var Router = Backbone.Router.extend({
 
 var App = Backbone.View.extend({
 
+    el: 'body',
+
+    events: {
+        'click .brand': 'toggleMenu',
+    },
+
     initialize: function(data) {
         this.tasks = new Tasks();
         this.tasks.reset(data.tasks);
@@ -519,6 +530,28 @@ var App = Backbone.View.extend({
             areas: this.areas
         });
         this.router = new Router({});
+    },
+
+    toggleMenu: function() {
+        console.log('hello');
+        centerwidth = this.$('#center').outerWidth();
+        centerleft = parseInt(this.$('#center').css('left'),10);
+        leftwidth = this.$('#left').outerWidth();
+        leftleft = parseInt(this.$('#left').css('left'),10);
+        this.$('#left').animate({
+            left: leftleft == 0 ?
+            0-leftwidth : 0
+        }, {
+            duration: 200,
+            queue: false
+        });
+        this.$('#center').animate({
+            left: centerleft == 0 ?
+            mainleft-thiswidt : 0
+        }, {
+            duration: 200,
+            queue: false
+        });
     }
 
 });
