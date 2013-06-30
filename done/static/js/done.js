@@ -470,7 +470,8 @@ var Router = Backbone.Router.extend({
         'next': 'next',
         'project/:project': 'project',
         'area/:area': 'area',
-        'all': 'all'
+        'all': 'all',
+        '*path': 'default'
     },
 
     goTo: function(route) {
@@ -500,6 +501,10 @@ var Router = Backbone.Router.extend({
 
     all: function() {
         this.goTo('all');
+    },
+
+    default: function() {
+        this.today();
     }
 
 })
