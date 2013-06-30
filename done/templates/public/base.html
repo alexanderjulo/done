@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+
+{% block navbar %}
+<ul class="nav">
+    {% for entry in ['about', 'docs', 'signup', 'login'] %}
+        <li {% if link == entry %}class="active"{% endif %}><a href="{{ url_for('PublicView:' + entry) }}">{{ entry }}</a></li>
+    {% endfor %}
+</ul>
+{% endblock navbar %}

@@ -1,0 +1,73 @@
+{% extends "public/base.html" %}
+
+{% block container %}
+<div class="public">
+    <div class="row">
+        <div class="span6 offset3">
+            <div class="page-header">
+                <h1>done <small>- about</small></h1>
+            </div>
+
+
+            <div class="page-header">
+                <h2>What is done?</h2>
+            </div>
+            <p>At it's core done is just an <strong>API to manage and synchronise todos</strong>. You can imagine it a little like <a href="#">simplenote</a>, only that simplenote is for todos, and done is for todos.</p>
+
+            <p>This API is surrounded by a <strong>set of apps</strong>. The web app is <strong>responsive and works on smartphones, tablets and desktop</strong>, as long as they have a recent browser available. But as the API is accessible and documented, <strong>anyone can write an app for done</strong>. That is actually what I am hoping for. I am neither good with Java nor with ObjC, so I hope that people will write apps for Android and iOS at a certain point. Or even Windows, Linux or Mac apps. Why would you do that? Well, <strong>you could sell the app and make money of it</strong>. But maybe you just want the perfect client. Well, that is no problem either. You are free to do as you like.</p>
+
+
+            <div class="page-header">
+                <h2>Features</h2>
+            </div>
+            <ul>
+                <li>Unlimited Todos, Projects and Areas!</li>
+                <li>Obviously due dates</li>
+                <li>Notes and recurring tasks (unlimited)</li>
+                <li>Reminders</li>
+                <li>Responsive/mobile ready web app included</li>
+                <li>No API limits! (if you don't use the web app)</li>
+            </ul>
+            
+
+
+            <div class="page-header">
+                <h2>Design</h2>
+            </div>
+            <p>done is following the GTD model. You can create tasks and either attach them to projects or areas. Areas are for long-term responsibilities like <i>private</i>. Projects can either stand on their own or can be attached to an area, i.e. <i>design a todo app</i> as project in your area <i>work</i>.</p>
+
+            <p>Tasks and projects can have due dates (but don't have to), areas can't.</p>
+            <div class="page-header">
+                <h2>Roadmap</h2>
+            </div>
+
+            <p>Well, let's put it this way. There is a roadmap, but there is no time attached to it, yet. The plan is as follows:</p>
+
+            <ol>
+                <li>Add multi-user support</li>
+                <li>Make the app mobile ready</li>
+                <li>Finish the API-documentation</li>
+                <li>Opensource the code</li>
+                <li>Make the hosted service liable to pay costs</li>
+            </ol>
+
+
+            <div class="page-header">
+                <h2>License &amp; Pricing</h2>
+            </div>
+            <p>For now the source code is private, as done is still in an early alpha state. Not all features are working as they are supposed to or even available. As done grows it will be open sourced.</p>
+
+            <p>This way anyone will be able to host an instance themselves. But I will also be hosting an instance here. This way people, who don't have a server or don't want to bother about installing done and keeping it running, can use the hosted version. I won't host it for free though. I will charge a one-digit dollar amount per month, to pay for hosting and my development time. This model is inspired by <a href="#">sentry</a>.</p>
+
+            <p>This also means, <strong>as long as it is not opensourced, hosted done will be free</strong>! So <a href="#">sign up and try it out</a>!</p>
+
+
+            <div class="page-header">
+                <h2>Author</h2>
+            </div>
+            <p>Yay! That's me! :) This project is being developed by <a href="https://julo.ch">Alexander Jung-Loddenkemper</a>.</p>
+        </div>
+
+    </div>
+</div>
+{% endblock container %}

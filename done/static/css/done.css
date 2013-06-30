@@ -232,6 +232,12 @@
 
 /* common classes */
 
+.public p,
+.public li {
+    font-size: 16px;
+    line-height: 24px;
+}
+
 .hidden {
     display: none;
 }
