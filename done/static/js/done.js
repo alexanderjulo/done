@@ -80,6 +80,11 @@ var Tasks = Backbone.Collection.extend({
 
 });
 
+var TemporaryTasks = Backbone.Collection.extend({
+    model: Task
+
+});
+
 var TasksView = Backbone.View.extend({
 
     el: '#tasks',
@@ -95,6 +100,8 @@ var TasksView = Backbone.View.extend({
 
     showCompleted: false,
 
+    selectedCollection: new TemporaryTasks({}),
+
     template: _.template($('#tasks-template').html()),
 
     initialize: function() {
@@ -104,7 +111,6 @@ var TasksView = Backbone.View.extend({
     },
 
     render: function() {
-        this.$el.html(this.template({showCompleted: this.showCompleted}));
         if (_.isFunction(this.filter)) {
             tasks = this.collection.filter(this.filter);
         } else if (_.isNull(this.filter)) {
@@ -112,14 +118,31 @@ var TasksView = Backbone.View.extend({
         } else {
             tasks = this.collection.where(this.filter);
         }
+        
+        this.selectedCollection.reset(tasks);
+
+        total = this.selectedCollection.length;
+        open = this.selectedCollection.where({completed: null}).length;
+        completed = this.selectedCollection.filter(function(task) {
+            return task.get('completed') != null
+        }).length;
+
+        this.$el.html(this.template({
+            name: this.name,
+            showCompleted: this.showCompleted,
+            total: total,
+            open: open,
+            completed: completed
+        }));
         _.each(tasks, function(task) {
             this.add(task);
         }, this);
         return this;
     },
 
-    select: function(filter) {
-        this.filter = filter
+    select: function(name, filter) {
+        this.name = name;
+        this.filter = filter;
         this.render();
     },
 
@@ -342,7 +365,7 @@ var MenuEntryView = Backbone.View.extend({
         }
         app.menuview.$('li').removeClass('active');
         this.$el.addClass('active');
-        app.tasksview.select(this.filter);
+        app.tasksview.select(this.name, this.filter);
         app.router.navigate(this.route);
     },
 
@@ -392,7 +415,7 @@ var MenuView = Backbone.View.extend({
                     return false
                 }
                 due = moment(task.get('due'), 'YYYY-MM-DD');
-                if (today.isSame(due, 'day') || today.isAfter(due, 'day')) {
+                if ((today.isSame(due, 'day') || today.isAfter(due, 'day')) && !task.get('completed'))  {
                     return true
                 }
             },
