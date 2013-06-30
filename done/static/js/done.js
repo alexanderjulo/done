@@ -433,7 +433,7 @@ var MenuView = Backbone.View.extend({
                 filterData: {project_id: project.get('id')},
                 droppable: true,
                 route: 'project/' + project.get('id'),
-                id: 'menu-entry-' + 'project/' + project.get('id'),
+                id: 'menu-entry-project-' + project.get('id'),
                 menuview: this
             });
             this.$('#menu-projects').append(view.render().el);
@@ -445,7 +445,7 @@ var MenuView = Backbone.View.extend({
                 filterData: {area_id: area.get('id')},
                 droppable: true,
                 route: 'area/' + area.get('id'),
-                id: 'menu-entry-' + 'area/' + area.get('id'),
+                id: 'menu-entry-area-' + area.get('id'),
                 menuview: this
             });
             this.$('#menu-areas').append(view.render().el);
@@ -502,11 +502,11 @@ var Router = Backbone.Router.extend({
     },
 
     project: function(project_id) {
-        this.goTo('project/' + project_id);
+        this.goTo('project-' + project_id);
     },
 
     area: function(area_id) {
-        this.goTo('area/' + area_id);
+        this.goTo('area-' + area_id);
     },
 
     all: function() {
