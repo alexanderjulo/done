@@ -1,6 +1,6 @@
 from datetime import date, timedelta
 import json
-from done import db
+from done import db, bcrypt
 
 
 class DateMixin(object):
@@ -15,11 +15,16 @@ class User(db.Model):
     name = db.Column(db.Text)
     password = db.Column(db.Text)
 
+    def set_password(self, password):
+        hash = bcrypt.generate_password_hash(password)
+        self.password = hash
+
     @classmethod
     def auth(self, name, password):
         print name, password
         user = self.query.filter_by(name=name).first()
-        return user is not None and user.password == password
+        return user is not None and \
+            bcrypt.check_password_hash(user.password, password)
 
 
 class Area(db.Model):
