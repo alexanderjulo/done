@@ -261,6 +261,8 @@ var InfoView = Backbone.View.extend({
     model: null,
 
     events: {
+        'dblclick #info-name .display': 'editName',
+        'keypress #info-name .editor': 'submitNameOnEnter',
         'click #info-completed': 'completed',
         'click #info-postpone': 'postpone',
         'click #info-delete': 'delete',
@@ -299,6 +301,19 @@ var InfoView = Backbone.View.extend({
             this.listenTo(this.model, 'remove', this.render);
             this.listenTo(this.model, 'destroy', this.render);
         }
+    },
+
+    editName: function() {
+        this.$('#info-name .display').toggle();
+        this.$('#info-name .editor').toggle();
+    },
+
+    submitNameOnEnter: function(event) {
+        if (event.keyCode != 13) return;
+        event.preventDefault();
+        name = this.$('#info-name .editor').val();
+        this.model.set({name: name});
+        this.model.save();
     },
 
     completed: function(event) {

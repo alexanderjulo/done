@@ -43,6 +43,10 @@
     margin-bottom: 0px;
 }
 
+#info #info-name .editor {
+    display: none;
+}
+
 #info .table {
     margin-top: 10px;
 }
