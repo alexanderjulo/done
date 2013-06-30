@@ -3,9 +3,10 @@ import json
 from flask import render_template, g, redirect, url_for, flash, session, \
     request
 from flask.ext.classy import route
+from done import db
 from done.tools import BaseView
 from done.models import User, Task, Project, Area
-from done.auth import get_current_user
+from done.auth import get_current_user, set_current_user
 
 
 class AppView(BaseView):
@@ -54,8 +55,32 @@ class AppView(BaseView):
             areas=areas_json
         )
 
+    @route('/signup/', methods=['GET', 'POST'])
     def signup(self):
-        return self._render_template('signup', link='signup')
+        if get_current_user():
+            return redirect(url_for('AppView:index'))
+        if request.method == 'GET':
+            return self._render_template('signup', link='signup')
+        else:
+            if request.json:
+                data = request.json
+            elif request.form:
+                data = request.form
+            else:
+                return 'User and password are required.', 400
+
+            if User.query.filter_by(name=data.get('user')).first():
+                return 'Username is already taken.', 200
+            elif data.get('password') != data.get('password-confirm'):
+                return 'Passwords do not match', 200
+            else:
+                user = User()
+                user.name = data.get('user')
+                user.set_password(data.get('password'))
+                db.session.add(user)
+                db.session.commit()
+                set_current_user(user)
+                return redirect(url_for('AppView:index'))
 
     @route('/login/', methods=['GET', 'POST'])
     def login(self):
@@ -72,8 +97,7 @@ class AppView(BaseView):
                 return 'User and password are required.', 400
             if User.auth(data.get('user'), data.get('password')):
                 user = User.query.filter_by(name=data.get('user')).first()
-                session['user'] = user.id
-                session.permanent = True
+                set_current_user(user)
                 return redirect(url_for('AppView:index'))
             else:
                 return redirect(url_for('AppView:login'))
