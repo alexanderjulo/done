@@ -87,7 +87,7 @@ var TasksView = Backbone.View.extend({
         'keypress #task-input': 'submitOnEnter'
     },
 
-    filterdata: null,
+    filterData: null,
 
     showCompleted: false,
 
@@ -141,6 +141,7 @@ var TasksView = Backbone.View.extend({
         }
         this.$('#task-input').val('');
         task = new Task({name: input, created: moment(new Date()).format('YYYY-MM-DD')});
+        task.set(this.filterData);
         this.collection.create(task);
     },
 
