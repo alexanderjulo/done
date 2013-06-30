@@ -98,12 +98,11 @@
 
 @media (max-width: 767px) {
 
-    /* we shift the padding from body to our container to make the
+    /* we shift the padding from the body to our app to make the
     navbar look nice! */
-    body, html, #container {
+    body, html {
         padding-left: 0px;
         padding-right: 0px;
-        overflow: hidden;
         width: 100%;
     }
 
@@ -222,6 +221,11 @@
 }
 
 /* common classes */
+
+.public {
+    padding-left: 20px;
+    padding-right: 20px;
+}
 
 .public p,
 .public li {

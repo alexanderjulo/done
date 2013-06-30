@@ -16,7 +16,11 @@
 {{ uicomponent('menu') }}
 {% endblock templates %}
 
-{% block head %}
+{% block css %}
+<link rel="stylesheet" type="text/css" href="{{ 'css/done.overflow.css'|static }}">
+{% endblock css %}
+
+{% block js %}
 <!-- app specific dependencies -->
 <script type="text/javascript" src="{{ 'js/jquery-ui.js'|static }}"></script>
 <script type="text/javascript" src="{{ 'js/underscore.js'|static }}"></script>
@@ -25,7 +29,7 @@
 
 <!-- the app -->
 <script type="text/javascript" src="{{ 'js/done.js'|static }}"></script>
-{% endblock head %}
+{% endblock js %}
 
 {% block button %}
 <button type="button" class="btn btn-navbar" id="menu-button">

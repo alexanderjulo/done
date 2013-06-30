@@ -1,0 +1,6 @@
+@media (max-width: 767px) {
+    html, body, .container {
+        overflow: hidden;
+        width: 100%;
+    }
+}
