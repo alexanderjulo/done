@@ -559,19 +559,17 @@ var App = Backbone.View.extend({
         centerleft = parseInt(this.$('#center').css('left'),10);
         leftwidth = this.$('#left').outerWidth();
         leftleft = parseInt(this.$('#left').css('left'),10);
+        this.$('#center').animate({
+            left: centerleft > 0 ?
+            0 : leftwidth
+        }, {
+            duration: 200
+        });
         this.$('#left').animate({
             left: leftleft == 0 ?
             0-leftwidth : 0
         }, {
-            duration: 200,
-            queue: false
-        });
-        this.$('#center').animate({
-            left: centerleft == 0 ?
-            leftwidth : 0
-        }, {
-            duration: 200,
-            queue: false
+            duration: 200
         });
         return this
     },
@@ -592,15 +590,13 @@ var App = Backbone.View.extend({
             left: rightleft == centerwidth ?
             rightleft-rightwidth : centerwidth
         }, {
-            duration: 200,
-            queue: false
+            duration: 200
         });
         this.$('#center').animate({
-            left: centerleft == 0 ?
+            left: centerleft >= 0 ?
             0 - rightwidth : 0
         }, {
-            duration: 200,
-            queue: false
+            duration: 200
         });
         this.$('#right').toggleClass('visible');
         return this
