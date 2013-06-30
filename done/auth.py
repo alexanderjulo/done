@@ -16,7 +16,7 @@ def get_current_user():
         return user
 
 
-def set_current_user():
+def set_current_user(user):
     session['user'] = user.id
     session.permanent = True
 
