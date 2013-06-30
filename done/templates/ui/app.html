@@ -51,6 +51,6 @@
         projects: {{ projects|safe }},
         areas: {{ areas|safe }}
     });
-    console.log(Backbone.history.start({root: '/app/'}));
+    Backbone.history.start({root: '/app/'});
 </script>
 {% endblock end %}
