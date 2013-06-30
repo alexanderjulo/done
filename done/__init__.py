@@ -11,6 +11,7 @@ def create_app(configobject=None, configfile=None):
         app.config.from_pyfile(configfile)
 
     db.init_app(app)
+    bcrypt.init_app(app)
 
     import tools
     tools.setUp(app)
@@ -28,3 +29,6 @@ def create_app(configobject=None, configfile=None):
 
 from flask.ext.sqlalchemy import SQLAlchemy
 db = SQLAlchemy()
+
+from flask.ext.bcrypt import Bcrypt
+bcrypt = Bcrypt()
