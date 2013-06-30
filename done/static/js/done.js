@@ -231,9 +231,11 @@ var InfoView = Backbone.View.extend({
     show: function(task) {
         this.model = task;
         this.render();
-        this.listenTo(this.model, 'change', this.render);
-        this.listenTo(this.model, 'remove', this.render);
-        this.listenTo(this.model, 'destroy', this.render);
+        if (this.model) {
+            this.listenTo(this.model, 'change', this.render);
+            this.listenTo(this.model, 'remove', this.render);
+            this.listenTo(this.model, 'destroy', this.render);
+        }
     },
 
     completed: function(event) {
