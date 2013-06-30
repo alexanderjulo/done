@@ -132,7 +132,8 @@ var TasksView = Backbone.View.extend({
         
     },
 
-    toggleCompleted: function() {
+    toggleCompleted: function(event) {
+        event.preventDefault();
         this.showCompleted = !this.showCompleted
         this.$('#tasks-show-completed').toggleClass('hidden');
         this.$('#tasks-completed').toggleClass('hidden');
