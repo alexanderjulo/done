@@ -39,10 +39,10 @@ def auth_required(f):
 
             # not enough data to authenticate
             if not data or not data.get('user') or not data.get('password'):
-                return Response('Please authenticate to use the API.', 403)
+                return Response('Please authenticate to use the API.', 401)
             # data is wrong
             elif not User.auth(data.get('user'), data.get('password')):
-                return Response('Authentication credentials are invalid.', 403)
+                return Response('Authentication credentials are invalid.', 401)
             # user authenticated successfully
             else:
                 user = User.query.filter_by(name=data.get('user')).first()
@@ -53,7 +53,7 @@ def auth_required(f):
         # if the user is invalid, kick invalidate the session and tell the user
         elif user is False:
             session['user'] = None
-            return Response('Authenticated user invalid.', 403)
+            return Response('Authenticated user invalid.', 401)
 
         # if the user is valid just add them to the g object
         else:
