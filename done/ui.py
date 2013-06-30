@@ -37,13 +37,13 @@ class AppView(BaseView):
             tasks_repr.append(task.repr)
         tasks_json = json.dumps(tasks_repr)
 
-        projects = Project.filter_by(owner_id=g.current_user.id).query.all()
+        projects = Project.query.filter_by(owner_id=g.current_user.id).all()
         projects_repr = []
         for project in projects:
             projects_repr.append(project.repr)
         projects_json = json.dumps(projects_repr)
 
-        areas = Area.filter_by(owner_id=g.current_user.id).query.all()
+        areas = Area.query.filter_by(owner_id=g.current_user.id).all()
         areas_repr = []
         for area in areas:
             areas_repr.append(area.repr)
