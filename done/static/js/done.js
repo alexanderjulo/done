@@ -60,8 +60,9 @@ var TaskView = Backbone.View.extend({
         this.tasksview.activeid = this.model.get('id');
         if (event) {
             event.preventDefault();
+            event.stopPropagation();
         }
-        if ($(window).width() < 768) {
+        if ($(window).width() < 768 && !app.infoVisible()) {
             app.toggleInfo();
         }
         this.tasksview.$('li').removeClass('active');
