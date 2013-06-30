@@ -78,6 +78,11 @@ class AppView(BaseView):
             else:
                 return redirect(url_for('AppView:login'))
 
+    @route('/logout/')
+    def logout(self):
+        session['user'] = None
+        return redirect(url_for('PublicView:index'))
+
 
 def setUp(app):
     """A helper to handle the lazy setup.

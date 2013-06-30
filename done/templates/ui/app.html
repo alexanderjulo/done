@@ -27,6 +27,12 @@
 <script type="text/javascript" src="{{ 'js/done.js'|static }}"></script>
 {% endblock head %}
 
+{% block navbar %}
+<ul class="nav">
+    <li><a href="{{ url_for('AppView:logout') }}">logout</a></li>
+</ul>
+{% endblock navbar %}
+
 {% block container %}
 <div class="row">
     <div class="span2" id="left">
