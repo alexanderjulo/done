@@ -563,3 +563,12 @@ var App = Backbone.View.extend({
     }
 
 });
+
+// automatically redirect to login page, when the login isn't valid anymore.
+$.ajaxSetup({
+    statusCode: {
+        403: function(){
+            location.href = "/app/login/";
+        }
+    }
+});
