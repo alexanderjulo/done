@@ -61,6 +61,9 @@ var TaskView = Backbone.View.extend({
         if (event) {
             event.preventDefault();
         }
+        if ($(window).width() < 768) {
+            app.toggleInfo();
+        }
         this.tasksview.$('li').removeClass('active');
         this.$el.addClass('active');
         app.infoview.show(this.model);
@@ -328,6 +331,9 @@ var MenuEntryView = Backbone.View.extend({
         if (event) {
             event.preventDefault();
         }
+        if ($(window).width() < 768 && app.menuVisible()) {
+            app.toggleMenu();
+        }
         app.menuview.$('li').removeClass('active');
         this.$el.addClass('active');
         app.tasksview.select(this.filterData);
@@ -516,7 +522,8 @@ var App = Backbone.View.extend({
     el: 'body',
 
     events: {
-        'click .brand': 'toggleMenu',
+        'click #menu-button': 'toggleMenu',
+        'click #center': 'maybeToggleInfo',
     },
 
     initialize: function(data) {
@@ -539,8 +546,14 @@ var App = Backbone.View.extend({
         this.router = new Router({});
     },
 
+    menuVisible: function() {
+        return parseInt(this.$('#left').css('left'),10) == 0
+    },
+
     toggleMenu: function() {
-        console.log('hello');
+        if (this.infoVisible()) {
+            this.toggleInfo();
+        }
         centerwidth = this.$('#center').outerWidth();
         centerleft = parseInt(this.$('#center').css('left'),10);
         leftwidth = this.$('#left').outerWidth();
@@ -554,11 +567,48 @@ var App = Backbone.View.extend({
         });
         this.$('#center').animate({
             left: centerleft == 0 ?
-            mainleft-thiswidt : 0
+            leftwidth : 0
         }, {
             duration: 200,
             queue: false
         });
+        return this
+    },
+
+    infoVisible: function() {
+        return parseInt(this.$('#right').css('left'),10) != this.$('#center').outerWidth()
+    },
+
+    toggleInfo: function() {
+        if (this.menuVisible()) {
+            this.toggleMenu();
+        }
+        centerwidth = this.$('#center').outerWidth();
+        centerleft = parseInt(this.$('#center').css('left'),10);
+        rightwidth = this.$('#right').outerWidth();
+        rightleft = parseInt(this.$('#right').css('left'),10);
+        this.$('#right').animate({
+            left: rightleft == centerwidth ?
+            rightleft-rightwidth : centerwidth
+        }, {
+            duration: 200,
+            queue: false
+        });
+        this.$('#center').animate({
+            left: centerleft == 0 ?
+            0 - rightwidth : 0
+        }, {
+            duration: 200,
+            queue: false
+        });
+        this.$('#right').toggleClass('visible');
+        return this
+    },
+
+    maybeToggleInfo: function() {
+        if (this.infoVisible() && $(window).width() < 768) {
+            this.toggleInfo();
+        }
     }
 
 });

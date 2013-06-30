@@ -10,6 +10,7 @@
 
 #menu {
     margin-top: 20px;
+    border-right: 1px solid #dddddd;
 }
 
 #menu .nav-header span.add {
@@ -31,6 +32,7 @@
 
 #info {
     padding-top: 70px;
+    border-left: 1px solid #dddddd;
 }
 
 #info .page-header {
@@ -124,7 +126,7 @@
         position: absolute;
         left: 100%;
         top: 60px;
-        width: 60%;
+        width: 70%;
     }
 
     #tasks #tasks-list li,
@@ -148,6 +150,9 @@
         float: right;
     }
 
+    #info {
+        padding-left: 10px;
+    }
 
 }
 
@@ -161,9 +166,6 @@
 }
 
 @media (min-width: 768px) and (max-width: 1199px) {
-    #menu {
-        border-right: 1px solid #dddddd;
-    }
 
     #tasks,
     #info {
@@ -189,17 +191,9 @@
         float: right;
     }
 
-    #info {
-        border-left: 1px solid #dddddd;
-    }
-
 }
 
 @media (min-width: 1200px) {
-
-    #menu {
-        border-right: 1px solid #dddddd;
-    }
 
     #tasks,
     #info {
@@ -225,9 +219,6 @@
         float: right;
     }
 
-    #info {
-        border-left: 1px solid #dddddd;
-    }
 }
 
 /* common classes */
