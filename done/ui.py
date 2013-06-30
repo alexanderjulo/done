@@ -55,12 +55,14 @@ class AppView(BaseView):
         )
 
     def signup(self):
-        return self._render_template('signup')
+        return self._render_template('signup', link='signup')
 
     @route('/login/', methods=['GET', 'POST'])
     def login(self):
+        if get_current_user():
+            return redirect(url_for('AppView:index'))
         if request.method == 'GET':
-            return self._render_template('login')
+            return self._render_template('login', link='login')
         else:
             if request.json:
                 data = request.json

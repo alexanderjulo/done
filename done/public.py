@@ -29,7 +29,7 @@ class PublicView(BaseView):
     def signup(self):
         return redirect(url_for('AppView:signup'), 301)
 
-    @route('/login/', methods=['GET', 'POST'])
+    @route('/login/')
     def login(self):
         return redirect(url_for('AppView:login'), 301)
 
