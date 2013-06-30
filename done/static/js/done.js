@@ -111,30 +111,60 @@ var TasksView = Backbone.View.extend({
     },
 
     render: function() {
+        // renders the tasksview and spawns all necessary taskview children
+        // set some default values
+        this.project = null;
+        this.area = null;
+
+        // check what kind of a filter we have
         if (_.isFunction(this.filter)) {
+            // if it is a function, we will use .filter() to check for matches
             tasks = this.collection.filter(this.filter);
         } else if (_.isNull(this.filter)) {
+            // if there is no filter, we will just use all models
             tasks = this.collection.models;
         } else {
+            // in any other case we assume it is an object and filter with .where()
             tasks = this.collection.where(this.filter);
+
+            // as we have an object, we might be displaying a single project
+            // or area, and would want to fetch some info to display it.
+            // so let's check for that. If this is the case, we should
+            // only have one criteria ...
+            if (_.size(this.filter) == 1) {
+                if (this.filter.project_id) {
+                    // ... and that is either project_id ...
+                    this.project = app.projects.get(this.filter.project_id)
+                } else if (this.filter.area_id) {
+                    // ...or area_id
+                    this.area = app.areas.get(this.filter.area_id)
+                }
+            }
         }
         
+        // a temporary backbone collection for the selected tasks
         this.selectedCollection.reset(tasks);
 
+        // getting some metadata about the selected tasks
         total = this.selectedCollection.length;
         open = this.selectedCollection.where({completed: null}).length;
         completed = this.selectedCollection.filter(function(task) {
             return task.get('completed') != null
         }).length;
 
+        // render the template with the metadata into the html
         this.$el.html(this.template({
             name: this.name,
+            project: this.project ? this.project.toJSON() : null,
+            area: this.area ? this.area.toJSON() : null,
             showCompleted: this.showCompleted,
             total: total,
             open: open,
             completed: completed
         }));
-        _.each(tasks, function(task) {
+        // spawn all the children..
+        
+        this.selectedCollection.each(function(task) {
             this.add(task);
         }, this);
         return this;
