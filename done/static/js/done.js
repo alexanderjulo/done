@@ -375,8 +375,7 @@ var MenuView = Backbone.View.extend({
         {
             name: 'Today',
             filterData: {
-                due: moment(new Date()).format('YYYY-MM-DD'),
-                completed: null
+                due: moment(new Date()).format('YYYY-MM-DD')
             },
             container: '#menu-focus',
             route: 'today'
