@@ -6,7 +6,7 @@ from flask.ext.classy import route
 from done import db
 from done.tools import BaseView
 from done.models import User, Task, Project, Area
-from done.auth import get_current_user, set_current_user
+from done.auth import auth_required, get_current_user, set_current_user
 
 
 class AppView(BaseView):
@@ -21,6 +21,7 @@ class AppView(BaseView):
             **kwargs
         )
 
+    @auth_required
     def index(self):
         """Render the app.
 
@@ -103,6 +104,7 @@ class AppView(BaseView):
                 return redirect(url_for('AppView:login'))
 
     @route('/logout/')
+    @auth_required
     def logout(self):
         session['user'] = None
         return redirect(url_for('PublicView:index'))
