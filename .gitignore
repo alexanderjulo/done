@@ -5,6 +5,7 @@
 # config & data
 database
 config.py
+.htaccess
 
 # sublime stuff
 *.sublime-*
