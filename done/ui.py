@@ -30,19 +30,19 @@ class AppView(BaseView):
         if not get_current_user():
             return redirect(url_for('AppView:login'))
 
-        tasks = Task.query.all()
+        tasks = Task.query.filter_by(owner_id=g.current_user.id).all()
         tasks_repr = []
         for task in tasks:
             tasks_repr.append(task.repr)
         tasks_json = json.dumps(tasks_repr)
 
-        projects = Project.query.all()
+        projects = Project.filter_by(owner_id=g.current_user.id).query.all()
         projects_repr = []
         for project in projects:
             projects_repr.append(project.repr)
         projects_json = json.dumps(projects_repr)
 
-        areas = Area.query.all()
+        areas = Area.filter_by(owner_id=g.current_user.id).query.all()
         areas_repr = []
         for area in areas:
             areas_repr.append(area.repr)
