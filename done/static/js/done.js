@@ -91,7 +91,7 @@ var TasksView = Backbone.View.extend({
         'keypress #task-input': 'submitOnEnter'
     },
 
-    filterData: null,
+    filter: null,
 
     showCompleted: false,
 
@@ -105,10 +105,12 @@ var TasksView = Backbone.View.extend({
 
     render: function() {
         this.$el.html(this.template({showCompleted: this.showCompleted}));
-        if (this.filterData) {
-            tasks = this.collection.where(this.filterData);
-        } else {
+        if (_.isFunction(this.filter)) {
+            tasks = this.collection.filter(this.filter);
+        } else if (_.isNull(this.filter)) {
             tasks = this.collection.models;
+        } else {
+            tasks = this.collection.where(this.filter);
         }
         _.each(tasks, function(task) {
             this.add(task);
@@ -116,8 +118,8 @@ var TasksView = Backbone.View.extend({
         return this;
     },
 
-    select: function(filterData) {
-        this.filterData = filterData
+    select: function(filter) {
+        this.filter = filter
         this.render();
     },
 
@@ -146,7 +148,9 @@ var TasksView = Backbone.View.extend({
         }
         this.$('#task-input').val('');
         task = new Task({name: input, created: moment(new Date()).format('YYYY-MM-DD')});
-        task.set(this.filterData);
+        if (!_.isFunction(this.filter)) {
+            task.set(this.filter);
+        }
         this.collection.create(task);
     },
 
@@ -311,7 +315,7 @@ var MenuEntryView = Backbone.View.extend({
 
     initialize: function(options) {
         this.menuview = options.menuview;
-        this.filterData = options.filterData;
+        this.filter = options.filter;
         this.name = options.name;
         this.route = options.route;
         if (options.droppable) {
@@ -338,7 +342,7 @@ var MenuEntryView = Backbone.View.extend({
         }
         app.menuview.$('li').removeClass('active');
         this.$el.addClass('active');
-        app.tasksview.select(this.filterData);
+        app.tasksview.select(this.filter);
         app.router.navigate(this.route);
     },
 
@@ -373,30 +377,46 @@ var MenuView = Backbone.View.extend({
     defaultEntries: [
         {
             name: 'Inbox',
-            filterData: {
+            filter: {
                 project_id: null,
-                area_id: null 
+                area_id: null
             },
             container: '#menu-incoming',
             route: 'inbox'
         },
         {
             name: 'Today',
-            filterData: {
-                due: moment(new Date()).format('YYYY-MM-DD')
+            filter: function(task) {
+                today = moment(new Date());
+                if (!task.get('due')) {
+                    return false
+                }
+                due = moment(task.get('due'), 'YYYY-MM-DD');
+                if (today.isSame(due, 'day') || today.isAfter(due, 'day')) {
+                    return true
+                }
             },
             container: '#menu-focus',
             route: 'today'
         },
         {
             name: 'Next',
-            filterData: {due: undefined},
+            filter: function(task) {
+                inaweek = moment(new Date()).add('days', 7);
+                due = moment(task.get('due'), 'YYYY-MM-DD');
+                if (!task.get('due')) {
+                    return false
+                }
+                if (due.isSame(inaweek, 'day') || inaweek.isAfter(due, 'day')) {
+                    return true
+                }
+            },
             container: '#menu-focus',
             route: 'next'
         },
         {
             name: 'All tasks',
-            filterData: null,
+            filter: null,
             container: '#menu-other',
             route: 'all'
         }
@@ -419,7 +439,7 @@ var MenuView = Backbone.View.extend({
         _.forEach(this.defaultEntries, function(entry) {
             view = new MenuEntryView({
                 name: entry.name,
-                filterData: entry.filterData,
+                filter: entry.filter,
                 route: entry.route,
                 id: 'menu-entry-' + entry.route,
                 menuview: this
@@ -430,7 +450,7 @@ var MenuView = Backbone.View.extend({
         this.projects.each(function(project) {
             view = new MenuEntryView({
                 name: project.get('name'),
-                filterData: {project_id: project.get('id')},
+                filter: {project_id: project.get('id')},
                 droppable: true,
                 route: 'project/' + project.get('id'),
                 id: 'menu-entry-project-' + project.get('id'),
@@ -442,7 +462,7 @@ var MenuView = Backbone.View.extend({
         this.areas.each(function(area) {
             view = new MenuEntryView({
                 name: area.get('name'),
-                filterData: {area_id: area.get('id')},
+                filter: {area_id: area.get('id')},
                 droppable: true,
                 route: 'area/' + area.get('id'),
                 id: 'menu-entry-area-' + area.get('id'),
