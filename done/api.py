@@ -48,6 +48,8 @@ class TaskView(APIBaseView):
         print changes
         """Modify a task. Returns the modified version of the task."""
         task = Task.query.get_or_404(task_id)
+        if task.owner_id != g.current_user.id:
+            return self._json_response('Unauthorized access.', 403)
         for key, value in changes.items():
             if key == 'name':
                 task.name = value
@@ -66,14 +68,15 @@ class TaskView(APIBaseView):
 
     def index(self):
         """Returns all tasks."""
-        tasks = Task.query.all()
+        tasks = Task.query.filter_by(owner_id=g.current_user.id).all()
         return self._json_elementlist(tasks)
 
     @route('/due/today')
     def duetoday(self):
         """Returns tasks due today."""
         tasks = Task.query.filter(
-            Task.due == date.today()
+            Task.due == date.today(),
+            Task.owner_id == g.current_user.id
         ).all()
         return self._json_elementlist(tasks)
 
@@ -85,7 +88,8 @@ class TaskView(APIBaseView):
         except ValueError:
             return self._json_error('Invalid date.')
         tasks = Task.query.filter(
-            Task.due == day
+            Task.due == day,
+            Task.owner_id == g.current_user.id
         ).all()
         return self._json_elementlist(tasks)
 
@@ -98,7 +102,8 @@ class TaskView(APIBaseView):
         except ValueError:
             return self._json_error('Invalid date.')
         tasks = Task.query.filter(
-            Task.due.between(start, end)
+            Task.due.between(start, end),
+            Task.owner_id == g.current_user.id
         ).all()
         return self._json_elementlist(tasks)
 
@@ -106,7 +111,8 @@ class TaskView(APIBaseView):
     def project(self, project_id):
         """Returns all tasks of the project."""
         tasks = Task.query.filter(
-            Task.project_id == project_id
+            Task.project_id == project_id,
+            Task.owner_id == g.current_user.id
         ).all()
         return self._json_elementlist(tasks)
 
@@ -114,7 +120,8 @@ class TaskView(APIBaseView):
     def area(self, area_id):
         """Returns all tasks in the area, that are not project specific."""
         tasks = Task.query.filter(
-            Task.area_id == area_id
+            Task.area_id == area_id,
+            Task.owner_id == g.current_user.id
         ).all()
         return self._json_elementlist(tasks)
 
@@ -122,7 +129,8 @@ class TaskView(APIBaseView):
     def completed(self, completed):
         """Return all completed tasks."""
         tasks = Task.query.filter(
-            Task.completed is not None
+            Task.completed is not None,
+            Task.owner_id == g.current_user.id
         ).all()
         return self._json_elementlist(tasks)
 
@@ -162,6 +170,8 @@ class TaskView(APIBaseView):
     def delete(self, task_id):
         """Delete the task with the given task id."""
         task = Task.query.get_or_404(task_id)
+        if task.owner_id != g.current_user.id:
+            return self._json_response('Unauthorized access.', 403)
         db.session.delete(task)
         db.session.commit()
         return self._json_success('Resource was successfully deleted.')
@@ -172,7 +182,7 @@ class ProjectView(APIBaseView):
     route_base = '/api/projects'
 
     def index(self):
-        projects = Project.query.all()
+        projects = Project.query.filter_by(owner_id=g.current_user.id).all()
         print projects[0].repr
         return self._json_elementlist(projects)
 
@@ -199,7 +209,7 @@ class AreaView(APIBaseView):
     route_base = '/api/areas'
 
     def index(self):
-        areas = Area.query.all()
+        areas = Area.query.filter_by(owner_id=g.current_user.id).all()
         return self._json_elementlist(areas)
 
     def post(self):
