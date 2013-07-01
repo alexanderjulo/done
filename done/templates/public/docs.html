@@ -9,10 +9,65 @@
             </div>
 
             <div class="page-header">
-                <h2>Introduction</h2>
+                <h2>Introduction / Basics</h2>
             </div>
 
             <p>Hello everyone! Well, it looks like you are considering to write something that makes use of the done app. Congratulations to that decision! ;)</p>
+
+            <p>The done API is pretty simple. It can be reach at the path <strong><code>/api/</code></strong>, the hosted version at <strong><code>https://done.julo.pw/api/</code></strong> (note the https, which is mandatory).</p>
+
+            <h3>Data formats</h3>
+
+            <p>Before I go into details about the different endpoints, I would like to explain some basics about the API. The most important thing is probably, how you can <strong>send data</strong> to it. The API is pretty flexible about that. It will always accept <strong>both form data, as well as json</strong>. Whatever you choose, the API will recognize it.</p>
+
+            <p>The API will always respond by sending JSON data combined with the correct status code. The API is restful and makes use of <code>GET</code>, <code>POST</code>, <code>PUT</code>, <code>PATCH</code> and <code>DELETE</code>.</p>
+
+            <h3>Authentication</h3>
+
+            <p>You will also have to be logged in at all times. You can either log in once and supply the issued cookie afterwards, or just send the authentication data every time (which might save you some trouble). As soon as your authentication runs out, the API will respond with <code>401</code> status codes.</p>
+
+            <p>If you wish to authenticate, you will have to supply username and password, as oauth or similar concepts are not supported yet. Please supply the username in the <code>user</code> field and the password in the <code>password</code> field.</p>
+
+            <div class="page-header">
+                <h2>Endpoints</h2>
+            </div>
+
+            <p>So far three endpoints are supported: <code>/tasks/</code>, <code>/projects/</code> and /areas/. Obiously one of for task management, one for project management and one for area management.</p>
+
+            <h3>Tasks endpoint</h3>
+
+            <p>The tasks endpoint always returns either a single task object or an array of multiple tasks objects. What happens in which case can be read below and might differ from endpoint to endpoint.</p>
+
+            <p>A task object always consists of the following properties:</p>
+
+            <pre><code>
+{
+    "id": "a unique integer identifying the task",
+    "name": "the name of the task",
+    "owner_id": "a unique integer identifying the owner of the task",
+    "area_id": "either null or a unique integer, identifying the area this task belongs in.",
+    "project_id": "either null or a unique integer, identifying the project this task belongs to.",
+    "recurral": "information where the task recurrs or not.",
+    "created": "iso date string of the day, when the task was created.",
+    "due": "null or the iso date string of the day, when the task is due.",
+    "completed": "null or the iso date date string of the day, when the task is due."
+}
+            </code></pre>
+
+            <p><code>id</code>, <code>owner_id</code> and <code>created</code> are set by the server as of creation and can not be modified. All other properties can be changed.</p>
+
+            <p>Following is a list of valid endpoints:</p>
+
+            <h4><code>GET /</code></h4>
+            <p>This endpoint does not require any data (besides authentication) and will return an array containing all of the user's tasks.</p>
+
+            <h4><code>POST /</code></h4>
+            <p>This endpoint requires at last the <code>name</code> property (as form data or json) and optionally <code>project_id</code>, <code>area_id</code> and <code>due</code>. It will add the task to the database and return the id.</p>
+
+            <p>It returns a single object representing the task, including the newly set generated <code>id</code>, <code>owner_id</code> and <code>created</code> properties.</p>
+
+            <h4><code>PATCH /:id</code></h4>
+
         </div>
 
     </div>
