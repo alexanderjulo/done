@@ -30,6 +30,11 @@
     margin-top: 20px;
 }
 
+#tasks .editor,
+#info .editor {
+    display: none;
+}
+
 #info {
     padding-top: 70px;
     border-left: 1px solid #dddddd;
@@ -40,26 +45,6 @@
 }
 
 #info .page-header h4 {
-    margin-bottom: 0px;
-}
-
-#info #info-name .editor {
-    display: none;
-}
-
-#info .table {
-    margin-top: 10px;
-}
-
-#info .table th,
-#info .table td {
-    height: 30px;
-    line-height: 30px;
-    vertical-align:middle
-}
-
-#info .table td input,
-#info .table td select {
     margin-bottom: 0px;
 }
 
@@ -274,4 +259,20 @@ ul.nav-list.nav-custom li.empty {
 
 ul.nav-list.nav-custom li .due {
     float: right;
+}
+
+.table-editor {
+    margin-top: 10px;
+}
+
+.table-editor th,
+.table-editor td {
+    height: 30px;
+    line-height: 30px;
+    vertical-align:middle
+}
+
+.table-editor td input,
+.table-editor td select {
+    margin-bottom: 0px;
 }
