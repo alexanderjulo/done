@@ -90,6 +90,9 @@ var TasksView = Backbone.View.extend({
     el: '#tasks',
 
     events: {
+        'click #tasks-edit-project': 'toggleProjectEdit',
+        'click #tasks-save-project': 'saveProject',
+        'click #tasks-delete-project': 'deleteProject',
         'click #tasks-show-completed': 'toggleCompleted',
         'click #tasks-hide-completed': 'toggleCompleted',
         'click #task-submit': 'submitOnClick',
@@ -217,6 +220,33 @@ var TasksView = Backbone.View.extend({
         event.preventDefault();
         this.submit();
     },
+
+    toggleProjectEdit: function(event) {
+        event.preventDefault();
+        this.$('#tasks-edit-project').toggle();
+        this.$('.info').toggle();
+        this.$('.editor').toggle();
+    },
+
+    saveProject: function(event) {
+        event.preventDefault();
+        this.project.set({
+            name: this.$('#tasks-edit-project-name').val(),
+            due: this.$('#tasks-edit-project-due').val(),
+            area_id: this.$('#tasks-edit-project-area option:selected').val()
+        });
+        this.project.save();
+        // little adjustments to the title, as the menuview won't enforce this
+        // until you click the entry again..
+        this.name = this.project.get('name');
+        this.render();
+    },
+
+    deleteProject: function(event) {
+        event.preventDefault();
+        this.project.destroy();
+        this.select(null);
+    }
 
 });
 
