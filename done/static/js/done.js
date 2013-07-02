@@ -120,7 +120,6 @@ var TasksHeaderProjectView = TasksHeaderView.extend({
     render: function() {
         data = this.data;
         data.project = this.model.toJSON();
-        data.areas = this.areas;
         this.$el.html(this.template(this.data));
         return this;
     },
@@ -134,7 +133,7 @@ var TasksHeaderProjectView = TasksHeaderView.extend({
 
     saveEdits: function(event) {
         event.preventDefault();
-        area_id = this.$('input.editor-area option:selected').val();
+        area_id = this.$('select.editor-area option:selected').val();
         this.model.set({
             name: this.$('input.editor-name').val(),
             due: this.$('input.editor-due').val(),
