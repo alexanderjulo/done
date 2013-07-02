@@ -85,14 +85,120 @@ var TemporaryTasks = Backbone.Collection.extend({
 
 });
 
+var TasksHeaderView = Backbone.View.extend({
+
+    model: null,
+
+    template: _.template($('#tasks-header-template').html()),
+
+    initialize: function(data) {
+        this.data = data;
+        if (this.model) {
+            this.listenTo(this.model, 'change', this.render);
+            this.listenTo(this.model, 'remove', this.remove);
+        }
+        this.render();
+    },
+
+    render: function() {
+        this.$el.html(this.template(this.data));
+        return this;
+    }
+
+});
+
+var TasksHeaderProjectView = TasksHeaderView.extend({
+
+    events: {
+        'click .show-editor': 'toggleEditor',
+        'click .save-editor': 'saveEdits',
+        'click .delete': 'delete'
+    },
+
+    template: _.template($('#tasks-header-project-template').html()),
+
+    render: function() {
+        data = this.data;
+        data.project = this.model.toJSON();
+        data.areas = this.areas;
+        this.$el.html(this.template(this.data));
+        return this;
+    },
+
+    toggleEditor: function(event) {
+        event.preventDefault();
+        this.$('.show-editor').toggle();
+        this.$('.info').toggle();
+        this.$('.editor').toggle();
+    },
+
+    saveEdits: function(event) {
+        event.preventDefault();
+        area_id = this.$('input.editor-area option:selected').val();
+        this.model.set({
+            name: this.$('input.editor-name').val(),
+            due: this.$('input.editor-due').val(),
+            area_id: area_id == 0 ? null : area_id
+        });
+        this.model.save();
+        // little adjustments to the title, as the menuview won't enforce this
+        // until you click the entry again..
+        this.render();
+    },
+
+    delete: function(event) {
+        event.preventDefault();
+        this.model.destroy();
+    }
+});
+
+var TasksHeaderAreaView = TasksHeaderView.extend({
+
+    events: {
+        'click .show-editor': 'toggleEditor',
+        'click .save-editor': 'saveEdits',
+        'click .delete': 'delete'
+    },
+
+    template: _.template($('#tasks-header-area-template').html()),
+
+    render: function() {
+        data = this.data;
+        data.area = this.model.toJSON();
+        this.$el.html(this.template(this.data));
+        return this;
+    },
+
+    toggleEditor: function(event) {
+        event.preventDefault();
+        this.$('.show-editor').toggle();
+        this.$('.info').toggle();
+        this.$('.editor').toggle();
+    },
+
+    saveEdits: function(event) {
+        event.preventDefault();
+        this.model.set({
+            name: this.$('input.editor-name').val(),
+            due: this.$('input.editor-due').val(),
+        });
+        this.model.save();
+        // little adjustments to the title, as the menuview won't enforce this
+        // until you click the entry again..
+        this.render();
+    },
+
+    delete: function(event) {
+        event.preventDefault();
+        this.model.destroy();
+    }
+});
+
 var TasksView = Backbone.View.extend({
 
     el: '#tasks',
 
     events: {
-        'click #tasks-edit-project': 'toggleProjectEdit',
-        'click #tasks-save-project': 'saveProject',
-        'click #tasks-delete-project': 'deleteProject',
         'click #tasks-show-completed': 'toggleCompleted',
         'click #tasks-hide-completed': 'toggleCompleted',
         'click #task-submit': 'submitOnClick',
@@ -139,9 +245,17 @@ var TasksView = Backbone.View.extend({
                 if (this.filter.project_id) {
                     // ... and that is either project_id ...
                     this.project = this.app.projects.get(this.filter.project_id)
+                    // if the project get's deleted, let's go back to the inbox
+                    this.listenTo(this.project, 'remove', function () {
+                        app.router.inbox({trigger: true})
+                    });
                 } else if (this.filter.area_id) {
                     // ...or area_id
                     this.area = this.app.areas.get(this.filter.area_id)
+                    // if the area get's deleted, let's go back to the inbox
+                    this.listenTo(this.area, 'remove', function () {
+                        app.router.inbox({trigger: true})
+                    });
                 }
             }
         }
@@ -158,17 +272,28 @@ var TasksView = Backbone.View.extend({
 
         // render the template with the metadata into the html
         this.$el.html(this.template({
-            name: this.name,
-            project: this.project ? this.project.toJSON() : null,
-            area: this.area ? this.area.toJSON() : null,
-            areas: this.app.areas.toJSON(),
             showCompleted: this.showCompleted,
             total: total,
             open: open,
             completed: completed
         }));
-        // spawn all the children..
-        
+
+        // spawn the header
+        if (this.project) {
+            this.header = new TasksHeaderProjectView({
+                model: this.project,
+                areas: this.areas
+            });
+        } else if (this.area) {
+            this.header = new TasksHeaderAreaView({
+                model: this.area
+            });
+        } else {
+            this.header = new TasksHeaderView({name: this.name});
+        }
+        this.$('#tasks-header').html(this.header.el);
+
+        // spawn all the task children..
         this.selectedCollection.each(function(task) {
             this.add(task);
         }, this);
@@ -221,34 +346,6 @@ var TasksView = Backbone.View.extend({
         if (event.keyCode != 13) return;
         event.preventDefault();
         this.submit();
-    },
-
-    toggleProjectEdit: function(event) {
-        event.preventDefault();
-        this.$('#tasks-edit-project').toggle();
-        this.$('.info').toggle();
-        this.$('.editor').toggle();
-    },
-
-    saveProject: function(event) {
-        event.preventDefault();
-        area_id = this.$('#tasks-edit-project-area option:selected').val();
-        this.project.set({
-            name: this.$('#tasks-edit-project-name').val(),
-            due: this.$('#tasks-edit-project-due').val(),
-            area_id: area_id == 0 ? null : area_id
-        });
-        this.project.save();
-        // little adjustments to the title, as the menuview won't enforce this
-        // until you click the entry again..
-        this.name = this.project.get('name');
-        this.render();
-    },
-
-    deleteProject: function(event) {
-        event.preventDefault();
-        this.project.destroy();
-        this.select(null);
     }
 
 });

@@ -1,0 +1,29 @@
+<div class="page-header">
+    <h3>
+        <%= area.name %>
+        <small>- Area <a href="#" class="btn btn-small pull-right show-editor">Edit</a></small>
+    </h3>
+    <div class="info">
+        <p><%= open %> todos out of <%= total %> are still open (<%= completed %> completed).</p>
+    </div>
+    <div class="editor">
+        <table class="table table-editor table-condensed">
+            <thead>
+                <tr>
+                    <th colspan="2">Area details</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Name</th>
+                    <td><input class="editor-name" type="text" value="<%= area.name %>"></td>
+                </tr>
+                <tr>
+                    <th>Due</th>
+                    <td><input class="editor-due" type="date" value="<%= area.due %>"></td>
+                </tr>
+            </tbody>
+        </table>
+        <a href="#" class="btn btn-primary save-editor">Save</a> <a href="#" class="btn btn-danger delete">Delete</a>
+    </div>
+</div>

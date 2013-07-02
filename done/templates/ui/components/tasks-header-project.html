@@ -1,0 +1,59 @@
+<div class="page-header">
+    <h3>
+        <%= project.name %>
+        <small>- Project <a href="#" class="btn btn-small pull-right show-editor">Edit</a></small>
+    </h3>
+    <div class="info">
+        <p><%= open %> todos out of <%= total %> are still open (<%= completed %> completed). The project is <% if (project.due) { %>due on <span class="due label label-<%
+                project.due = moment(project.due, 'YYYY-MM-DD');
+                tod = moment(new Date());
+                if (tod.isBefore(due, 'day')) {
+                    print('info')
+                } else if (tod.isSame(due, 'day')) {
+                    print('warning')
+                } else if (tod.isAfter(due, 'day')) {
+                    print('important')
+                }%>
+            "><%= project.due %></span>
+            <% } else { %>never due<% } %>.
+            <% if (project.area_id) {
+                    area = app.areas.get(project.area_id); %>
+                This project is part of the area <a href="#area/<%= area.get('id') %>"><%= area.get('name') %></a>.
+            <% } %>
+        </p>
+        <div class="progress">
+            <div class="bar" style="width: <%= completed / total * 100 %>%;"></div>
+        </div>
+    </div>
+    <div class="editor">
+        <table class="table table-editor table-condensed">
+            <thead>
+                <tr>
+                    <th colspan="2">Project details</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <th>Name</th>
+                    <td><input class="editor-name" type="text" value="<%= project.name %>"></td>
+                </tr>
+                <tr>
+                    <th>Due</th>
+                    <td><input class="editor-due" type="date" value="<%= project.due %>"></td>
+                </tr>
+                <tr>
+                    <th>Area</th>
+                    <td>
+                        <select class="editor-area" > 
+                            <% _.each(areas, function(area) { %>
+                                <option value="<%= area.id %>" <% if (area.id == project.area_id) { print('selected="selected"') } %>><%= area.name %></option>
+                            <% }); %>
+                            <option value="0" <% if (!project.area_id) { %>selected="selected" <% } %>>None</option>
+                        </select>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <a href="#" class="btn btn-primary save-editor">Save</a> <a href="#" class="btn btn-danger delete">Delete</a>
+    </div>
+</div>
