@@ -241,6 +241,20 @@ class AreaView(APIBaseView):
 
     route_base = '/api/areas'
 
+    def _update(self, area_id, changes):
+        print changes
+        """Modify a project. Returns the modified version of the area."""
+        area = Area.query.get_or_404(area_id)
+        if area.owner_id != g.current_user.id:
+            return self._json_response('Unauthorized access.', 403)
+        for key, value in changes.items():
+            if key == 'name':
+                area.name = value
+            if key == 'due':
+                area.due = strpisodate(value)
+        db.session.commit()
+        return self._json_response(area.repr)
+
     def index(self):
         areas = Area.query.filter_by(owner_id=g.current_user.id).all()
         return self._json_elementlist(areas)
@@ -261,6 +275,23 @@ class AreaView(APIBaseView):
         db.session.add(area)
         db.session.commit()
         return self._json_response(area.repr)
+
+    def patch(self, area_id):
+        """Alter an area by just passing the attributes to change."""
+        return self._update(area_id, request.json or request.form)
+
+    def put(self, area_id):
+        """Alter an area by passing in all attributes."""
+        return self._update(area_id, request.json or request.form)
+
+    def delete(self, area_id):
+        """Delete the area with the given area id."""
+        area = Area.query.get_or_404(area_id)
+        if area.owner_id != g.current_user.id:
+            return self._json_response('Unauthorized access.', 403)
+        db.session.delete(area)
+        db.session.commit()
+        return self._json_success('Resource was successfully deleted.')
 
 
 def setUp(app):
