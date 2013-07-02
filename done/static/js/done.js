@@ -107,7 +107,8 @@ var TasksView = Backbone.View.extend({
 
     template: _.template($('#tasks-template').html()),
 
-    initialize: function() {
+    initialize: function(options) {
+        this.app = options.app;
         this.render();
         this.listenTo(this.collection, 'add', this.add);
         this.listenTo(this.collection, 'change', this.render);
@@ -137,10 +138,10 @@ var TasksView = Backbone.View.extend({
             if (_.size(this.filter) == 1) {
                 if (this.filter.project_id) {
                     // ... and that is either project_id ...
-                    this.project = app.projects.get(this.filter.project_id)
+                    this.project = this.app.projects.get(this.filter.project_id)
                 } else if (this.filter.area_id) {
                     // ...or area_id
-                    this.area = app.areas.get(this.filter.area_id)
+                    this.area = this.app.areas.get(this.filter.area_id)
                 }
             }
         }
@@ -160,6 +161,7 @@ var TasksView = Backbone.View.extend({
             name: this.name,
             project: this.project ? this.project.toJSON() : null,
             area: this.area ? this.area.toJSON() : null,
+            areas: this.app.areas.toJSON(),
             showCompleted: this.showCompleted,
             total: total,
             open: open,
@@ -230,10 +232,11 @@ var TasksView = Backbone.View.extend({
 
     saveProject: function(event) {
         event.preventDefault();
+        area_id = this.$('#tasks-edit-project-area option:selected').val();
         this.project.set({
             name: this.$('#tasks-edit-project-name').val(),
             due: this.$('#tasks-edit-project-due').val(),
-            area_id: this.$('#tasks-edit-project-area option:selected').val()
+            area_id: area_id == 0 ? null : area_id
         });
         this.project.save();
         // little adjustments to the title, as the menuview won't enforce this
@@ -375,8 +378,7 @@ var InfoView = Backbone.View.extend({
     project: function() {
         value = this.$('#info-project option:selected').val();
         if (value == 0) {
-            this.model.set({project_id: null});
-            
+            this.model.set({project_id: null});  
         } else {
             this.model.set({project_id: value, area_id: null});
         }
@@ -653,7 +655,7 @@ var App = Backbone.View.extend({
         this.projects.reset(data.projects);
         this.areas = new Areas();
         this.areas.reset(data.areas);
-        this.tasksview = new TasksView({collection: this.tasks});
+        this.tasksview = new TasksView({collection: this.tasks, app: this});
         this.infoview = new InfoView({
             collection: this.tasks,
             projects: this.projects,

@@ -38,7 +38,11 @@
                         <tr>
                             <th>Area</th>
                             <td>
-                                <select id="tasks-edit-project-due">
+                                <select id="tasks-edit-project-area">
+                                    <% _.each(areas, function(area) { %>
+                                        <option value="<%= area.id %>" <% if (area.id == project.area_id) { print('selected="selected"') } %>><%= area.name %></option>
+                                    <% }); %>
+                                    <option value="0" <% if (!project.area_id) { %>selected="selected" <% } %>>None</option>
                                 </select>
                             </td>
                         </tr>
