@@ -181,6 +181,22 @@ class ProjectView(APIBaseView):
 
     route_base = '/api/projects'
 
+    def _update(self, project_id, changes):
+        print changes
+        """Modify a project. Returns the modified version of the project."""
+        project = Project.query.get_or_404(project_id)
+        if project.owner_id != g.current_user.id:
+            return self._json_response('Unauthorized access.', 403)
+        for key, value in changes.items():
+            if key == 'name':
+                project.name = value
+            if key == 'area_id':
+                project.area_id = value
+            if key == 'due':
+                project.due = strpisodate(value)
+        db.session.commit()
+        return self._json_response(project.repr)
+
     def index(self):
         projects = Project.query.filter_by(owner_id=g.current_user.id).all()
         print projects[0].repr
@@ -202,6 +218,23 @@ class ProjectView(APIBaseView):
         db.session.add(project)
         db.session.commit()
         return self._json_response(project.repr)
+
+    def patch(self, project_id):
+        """Alter a project by just passing the attributes to change."""
+        return self._update(project_id, request.json or request.form)
+
+    def put(self, project_id):
+        """Alter a project by passing in all attributes."""
+        return self._update(project_id, request.json or request.form)
+
+    def delete(self, project_id):
+        """Delete the project with the given project id."""
+        project = Project.query.get_or_404(project_id)
+        if project.owner_id != g.current_user.id:
+            return self._json_response('Unauthorized access.', 403)
+        db.session.delete(project)
+        db.session.commit()
+        return self._json_success('Resource was successfully deleted.')
 
 
 class AreaView(APIBaseView):
