@@ -5,7 +5,7 @@
     </h3>
     <div class="info">
         <p><%= open %> todos out of <%= total %> are still open (<%= completed %> completed). The project is <% if (project.due) { %>due on <span class="due label label-<%
-                project.due = moment(project.due, 'YYYY-MM-DD');
+                due = moment(project.due, 'YYYY-MM-DD');
                 tod = moment(new Date());
                 if (tod.isBefore(due, 'day')) {
                     print('info')
