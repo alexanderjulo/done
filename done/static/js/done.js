@@ -574,17 +574,25 @@ var MenuView = Backbone.View.extend({
         return this;
     },
 
-    newProject: function() {
-        name = prompt("Please enter a name for the project:", "");
-        if (name != "") {
+    newProject: function(event) {
+        event.preventDefault();
+        name = prompt("Please enter a name for the project:", '');
+        // as chrome has a really ugly bug(?) which causes prompt() abort results
+        // that are assigned to a variable to be 'null' (string) instead of null,
+        // I have to block 'null' as project name
+        if (name != '' && name != null && name != 'null') {
             this.projects.create({name: name});
             this.render();
         }
     },
 
-    newArea: function() {
-        name = prompt("Please enter a name for the area:", "");
-        if (name != "") {
+    newArea: function(event) {
+        event.preventDefault();
+        name = prompt("Please enter a name for the area:", '');
+        // as chrome has a really ugly bug(?) which causes prompt() abort results
+        // that are assigned to a variable to be 'null' (string) instead of null,
+        // I have to block 'null' as area name
+        if (name != '' && name != null && name != 'null') {
             this.areas.create({name: name});
             this.render();
         }
