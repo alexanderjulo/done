@@ -15,7 +15,7 @@
                 }%>
             "><%= due %></span> <% } else { %>never due<% } %>.<% if (project.area_id) { area = app.areas.get(project.area_id); %> This project is part of the area <a href="#area/<%= area.get('id') %>"><%= area.get('name') %></a>. <% } %></p>
             <div class="progress">
-                <div class="bar" style="width: <%= open / total * 100 %>%;"></div>
+                <div class="bar" style="width: <%= completed / total * 100 %>%;"></div>
             </div>
         <% } else if (area) { %>
             <small>- Area</small>
