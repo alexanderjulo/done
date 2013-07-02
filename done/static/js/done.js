@@ -224,6 +224,8 @@ var TasksView = Backbone.View.extend({
         // set some default values
         this.project = null;
         this.area = null;
+        totalProjects = 0;
+        openProjects = 0;
 
         // check what kind of a filter we have
         if (_.isFunction(this.filter)) {
@@ -269,19 +271,38 @@ var TasksView = Backbone.View.extend({
             return task.get('completed') != null
         }).length;
 
+        if (this.area) {
+            containedProjects = []
+            _.each(this.app.projects.where({area_id: this.area.get('id')}), function(project) {
+                containedProjects.push(project.get('id'));
+            });
+            totalProjects = _.size(containedProjects);
+            treatedProjects = [];
+            this.collection.filter(function(task) {
+                if(_.contains(containedProjects, task.get('project_id'))) {
+                    if (task.get('completed') == null && !_.contains(treatedProjects, task.get('project_id'))) {
+                        treatedProjects.push(task.get('project_id'));
+                        openProjects += 1
+                    }
+                }
+            });
+        }
+
         // render the template with the metadata into the html
         this.$el.html(this.template({
             showCompleted: this.showCompleted,
             total: total,
             open: open,
-            completed: completed
+            completed: completed,
+            openProjects: openProjects,
+            totalProjects: totalProjects
         }));
 
         // spawn the header
         if (this.project) {
             this.header = new TasksHeaderProjectView({
                 model: this.project,
-                areas: this.areas
+                areas: this.app.areas.toJSON()
             });
         } else if (this.area) {
             this.header = new TasksHeaderAreaView({
@@ -292,10 +313,27 @@ var TasksView = Backbone.View.extend({
         }
         this.$('#tasks-header').html(this.header.el);
 
-        // spawn all the task children..
+        // if we display an area, show the related projects!
+        if (this.area) {
+            _.each(this.app.projects.where({area_id: this.area.get('id')}), function(
+    project) {
+                view = new ProjectView({model: project});
+                view.render();
+                tasks = new TemporaryTasks({});
+                tasks.reset(this.collection.where({project_id: project.get('id')}));
+                if (tasks.where({'completed': null}).length > 0) {
+                    this.$('#tasks-list').prepend(view.el);
+                } else {
+                    this.$('#tasks-list-completed').prepend(view.el);
+                }
+            }, this);
+        }
+
+        // spawn all the child tasks..
         this.selectedCollection.each(function(task) {
             this.add(task);
         }, this);
+
         return this;
     },
 
@@ -351,9 +389,33 @@ var TasksView = Backbone.View.extend({
 
 var Project = Backbone.Model.extend({
 
+    tagName: 'li',
+
     defaults: {
         id: null,
         name: null
+    }
+
+});
+
+var ProjectView = Backbone.View.extend({
+
+    tagName: 'li',
+
+    events: {
+        'click': 'show'
+    },
+
+    template: _.template($('#project-template').html()),
+
+    render: function() {
+        this.$el.html(this.template(this.model.toJSON()));
+        return this;
+    },
+
+    show: function(event) {
+        event.preventDefault();
+        app.router.navigate('project/' + this.model.get('id'), {trigger: true});
     }
 
 });
