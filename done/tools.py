@@ -27,9 +27,12 @@ def strpisodate(string):
     :rtype: date object"""
     if string is None:
         return None
-    dt = datetime.strptime(string, '%Y-%m-%d')
-    d = date(year=dt.year, month=dt.month, day=dt.day)
-    return d
+    try:
+        dt = datetime.strptime(string, '%Y-%m-%d')
+        d = date(year=dt.year, month=dt.month, day=dt.day)
+        return d
+    except ValueError:
+        return None
 
 
 def setUp(app):
